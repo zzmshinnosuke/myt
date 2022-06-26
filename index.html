@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>点名</title>
+	</head>
+	<script type="text/javascript">
+		var key_content = new Array();
+		var txt_content ="";
+		function showPreview(source){
+			var input = source;
+			var reader = new FileReader();
+			reader.readAsText(input.files[0]);
+			reader.onload = function() {
+				if(reader.result) {
+                    var temp = reader.result;
+					txt_content = temp.split('\n');
+                    console.log(temp,txt_content);
+				}
+			};
+		}
+        function showPreview_key(source){
+			var input = source;
+			var reader = new FileReader();
+			reader.readAsText(input.files[0]);
+			reader.onload = function() {
+				if(reader.result) {
+					var temp = reader.result.split('\n');
+                    for(var i=0; i<temp.length; i++){
+                        pre = temp[i].split(" ")[0]
+                        if(key_content.indexOf(pre, 0) == -1){
+                            key_content.push(pre.replace("\r", ""));
+                        }
+                    }
+                    console.log(key_content);
+				}
+			};
+		}
+        // function save(){
+        //     File file = new File("Hello1.txt");
+        //     file.createNewFile();
+        //     var writer = new FileWriter(file);
+        // }
+        function save() {
+            if(txt_content == "")
+			{
+				alert("请先上传内容文件");
+			}
+            else if(key_content.length == 0)
+			{
+				alert("请关键字文件");
+			}
+            else{
+                var name = "temp.txt";
+                var data = "";
+                for(var i=0; i<txt_content.length; i++){
+                    var pre = txt_content[i].split(" ")[0];
+                    if(key_content.indexOf(pre, 0) != -1 || pre == "\r"){
+                        data += txt_content[i] + "\n";
+                    }
+                }
+                var urlObject = window.URL || window.webkitURL || window;
+                var export_blob = new Blob([data]);
+                var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+                save_link.href = urlObject.createObjectURL(export_blob);
+                save_link.download = name;
+                fakeClick(save_link);
+            } 
+        } 
+
+        function fakeClick(obj) {
+            var ev = document.createEvent("MouseEvents");
+            ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            obj.dispatchEvent(ev);
+        }
+
+	</script>
+	<body>
+		<div id="div" align="center" style="width: 300px;height: 300px; background-color: #FDEF85; margin: auto;">
+			<br>
+			<input type="file" name="file" value="上传原文件" onchange="showPreview(this)" />
+			<br>
+            <br>
+            <input type="file" name="file" value="上传关键字文件" onchange="showPreview_key(this)" />
+			<br>
+			<br>
+			<input type="button" value="保存" onclick="save()">
+		</div>
+	</body>
+</html>
