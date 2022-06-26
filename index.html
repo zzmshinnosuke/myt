@@ -7,6 +7,7 @@
 	<script type="text/javascript">
 		var key_content = new Array();
 		var txt_content ="";
+        // 读取要筛选的原文件
 		function showPreview(source){
 			var input = source;
 			var reader = new FileReader();
@@ -19,6 +20,7 @@
 				}
 			};
 		}
+        // 读取关键字文件
         function showPreview_key(source){
 			var input = source;
 			var reader = new FileReader();
@@ -36,6 +38,7 @@
 				}
 			};
 		}
+        // 保存成txt文件
         function save() {
             if(txt_content == "")
 			{
@@ -62,6 +65,7 @@
                 fakeClick(save_link);
             } 
         } 
+        // 模拟点击事件，用来下载文件
         function fakeClick(obj) {
             var ev = document.createEvent("MouseEvents");
             ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -69,9 +73,10 @@
         }
 
 
-        var group_txt_content = Array();
-        var total_pages = 88;
-        var urgent_num = 0;
+        var group_txt_content = Array(); 
+        var total_pages = 88; //组合的总页数
+        var urgent_num = 0;  //需要加急的文档数
+        // 读取文件
         function groupReadFile(source){
 			var input = source;
 			var reader = new FileReader();
@@ -98,6 +103,7 @@
 			};
 		}
 
+        // 保存组合后文件
         function groupSave(){
             total_pages = parseInt(document.getElementById("txt_total_pages").value);
             if(group_txt_content == "")
@@ -120,6 +126,7 @@
         }
         var path = Array();
         var res = Array();
+        // 计算当前的总页数
         function addArray(array, num){
             var sum = 0;
             for(var i=0 ; i<array.length; i++){
@@ -128,18 +135,6 @@
             return sum;
         }
 
-        function backtracking(group_txt_content, index){
-            // console.log(path, index);
-            if(addArray(path, 1) == total_pages){
-                res.push([].concat(path));
-                return;
-            }
-            for(var i=index; i<group_txt_content.length; i++){
-                path.push(group_txt_content[i]);
-                backtracking(group_txt_content, i+1);
-                path.pop();
-            }
-        }
         //选出包含所有加急的组合，和不加急的组合
         function select(){
             var urgent = Array();
@@ -177,6 +172,20 @@
             return all;
         }
 
+        // 回溯
+        function backtracking(group_txt_content, index){
+            if(addArray(path, 1) == total_pages){
+                res.push([].concat(path));
+                return;
+            }
+            for(var i=index; i<group_txt_content.length; i++){
+                path.push(group_txt_content[i]);
+                backtracking(group_txt_content, i+1);
+                path.pop();
+            }
+        }
+
+        // 寻找合适的组合
         function groupGet(){
             path = [];
             res = [];
@@ -187,7 +196,6 @@
             }
             console.log(res);
             return select();
-            // return res;
         }
 
 	</script>
